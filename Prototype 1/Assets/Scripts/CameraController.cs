@@ -1,14 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public GameObject player;
-    public Vector3 offset;
+    [SerializeField] private GameObject player;
+    [SerializeField] private Vector3 offset;
+
+    [SerializeField] private float cameraSmoothness;
+
+    private PlayerController playerController;
+
+    void Start() => playerController = FindObjectOfType<PlayerController>();
+
+    void Update()
+    {
+        if(playerController.speedCurrent >= 100)
+        Debug.Log("Screaming for my life: AAAAAHHHHHHHH");
+    }        
 
     void LateUpdate()
     {
-        transform.position = player.transform.position + offset;
+        Vector3 targetPosition = player.transform.position + player.transform.rotation * offset;
+        transform.position = Vector3.Lerp(transform.position, targetPosition, cameraSmoothness * Time.deltaTime);
+
+        transform.LookAt(player.transform.position);
     }
 }
